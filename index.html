@@ -8,15 +8,19 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🦋</text></svg>">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
         :root {
-            --primary-color: #5a5a7a; /* Um roxo acinzentado suave */
-            --secondary-color: #f4f4f4; /* Fundo cinza claro */
-            --text-color: #333333;
-            --accent-color: #d1c4e9; /* Lavanda claro para detalhes */
-            --white-color: #ffffff;
+            --primary-color: #7E6B8F; /* Roxo suave e acolhedor */
+            --secondary-color: #F5F3F7; /* Fundo muito claro com tom lavanda */
+            --accent-color: #D6C7EC; /* Lavanda para destaques */
+            --text-color: #4A4453; /* Texto principal */
+            --light-text: #7A7384; /* Texto secundário */
+            --white-color: #FFFFFF;
+            --success-color: #7EBDC3; /* Verde azulado suave */
+            --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         * {
@@ -31,29 +35,65 @@
             line-height: 1.7;
             background-color: var(--secondary-color);
             color: var(--text-color);
+            overflow-x: hidden;
         }
 
-        h1, h2, h3 {
+        h1, h2, h3, h4 {
             font-family: 'Playfair Display', serif;
             color: var(--primary-color);
             font-weight: 600;
         }
 
         .container {
-            max-width: 1100px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 0 2rem;
+        }
+
+        /* Animações */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .animate-fadeIn {
+            animation: fadeIn 1s ease forwards;
+        }
+
+        .animate-float {
+            animation: float 5s ease-in-out infinite;
+        }
+
+        .animate-pulse {
+            animation: pulse 2s ease infinite;
         }
 
         /* Header e Navegação */
         header {
             background: var(--white-color);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 15px rgba(126, 107, 143, 0.1);
             padding: 1rem 0;
             position: fixed;
             width: 100%;
             top: 0;
             z-index: 1000;
+            transition: var(--transition);
+        }
+
+        header.scrolled {
+            padding: 0.7rem 0;
         }
 
         .navbar {
@@ -64,147 +104,290 @@
 
         .logo {
             font-family: 'Playfair Display', serif;
-            font-size: 1.5rem;
-            font-weight: 600;
+            font-size: 1.6rem;
+            font-weight: 700;
             color: var(--primary-color);
             text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
         
-        .logo span {
-            font-size: 1.8rem;
-            margin-right: 5px;
+        .logo-icon {
+            font-size: 2rem;
+            transition: var(--transition);
         }
 
         .nav-links {
             list-style: none;
             display: flex;
-            gap: 1.5rem;
+            gap: 2rem;
         }
 
         .nav-links a {
             text-decoration: none;
-            color: var(--primary-color);
-            font-weight: 400;
-            transition: color 0.3s ease;
+            color: var(--text-color);
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
+            padding: 0.5rem 0;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary-color);
+            transition: var(--transition);
         }
 
         .nav-links a:hover {
-            color: var(--accent-color);
+            color: var(--primary-color);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            cursor: pointer;
         }
 
         /* Seções */
         section {
-            padding: 6rem 0;
+            padding: 7rem 0;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        section.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .section-title {
             text-align: center;
-            font-size: 2.5rem;
+            font-size: 2.8rem;
             margin-bottom: 3rem;
+            position: relative;
+            padding-bottom: 1rem;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(to right, var(--accent-color), var(--primary-color));
+            border-radius: 3px;
         }
 
         /* Seção Home */
         #home {
-            background: var(--white-color);
+            background: linear-gradient(135deg, var(--white-color) 0%, var(--secondary-color) 100%);
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
             min-height: 100vh;
+            padding-top: 5rem;
         }
         
         .home-content {
-            max-width: 800px;
+            max-width: 850px;
+            padding: 2rem;
         }
         
         .home-content h1 {
-            font-size: 3rem;
-            margin-bottom: 1rem;
+            font-size: 3.2rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
         }
 
         .home-content p {
-            font-size: 1.1rem;
-            margin-bottom: 2rem;
-            color: #666;
+            font-size: 1.2rem;
+            margin-bottom: 2.5rem;
+            color: var(--light-text);
         }
 
         .btn {
             background: var(--primary-color);
             color: var(--white-color);
-            padding: 0.8rem 1.8rem;
+            padding: 1rem 2.2rem;
             border: none;
-            border-radius: 5px;
+            border-radius: 50px;
             text-decoration: none;
-            font-size: 1rem;
+            font-size: 1.1rem;
+            font-weight: 500;
             cursor: pointer;
-            transition: background 0.3s ease;
+            transition: var(--transition);
+            display: inline-block;
+            box-shadow: 0 4px 15px rgba(126, 107, 143, 0.3);
         }
 
         .btn:hover {
-            background: #4a4a6a;
+            background: #6c5c7c;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(126, 107, 143, 0.4);
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .social-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--white-color);
+            color: var(--primary-color);
+            font-size: 1.2rem;
+            transition: var(--transition);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .social-link:hover {
+            background: var(--primary-color);
+            color: var(--white-color);
+            transform: translateY(-3px);
         }
         
         /* Seção Sobre */
         #sobre {
-            background: var(--secondary-color);
+            background: var(--white-color);
         }
 
         .about-content {
             display: flex;
             align-items: center;
-            gap: 3rem;
+            gap: 4rem;
+        }
+
+        .about-image {
+            flex: 1;
+            position: relative;
         }
 
         .about-image img {
-            max-width: 300px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 380px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: var(--transition);
+        }
+
+        .about-image:hover img {
+            transform: scale(1.02);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .about-image::after {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            width: 100%;
+            height: 100%;
+            border: 3px solid var(--accent-color);
+            border-radius: 15px;
+            z-index: -1;
+        }
+
+        .about-text {
+            flex: 1;
+        }
+
+        .about-text h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
         }
 
         .about-text p {
-            margin-bottom: 1rem;
+            margin-bottom: 1.2rem;
+            color: var(--light-text);
         }
 
         /* Seção Serviços */
         #servicos {
-            background: var(--white-color);
+            background: var(--secondary-color);
         }
 
         .services-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
         }
 
         .service-card {
-            background: var(--secondary-color);
-            padding: 2rem;
-            border-radius: 10px;
+            background: var(--white-color);
+            padding: 2.5rem 2rem;
+            border-radius: 15px;
             text-align: center;
-            border-left: 5px solid var(--accent-color);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: var(--transition);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--accent-color), var(--primary-color));
+            transition: var(--transition);
         }
         
         .service-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        .service-card:hover::before {
+            width: 100%;
+            opacity: 0.05;
         }
         
         .service-card h3 {
-            margin-bottom: 1rem;
-            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            position: relative;
+            z-index: 1;
         }
         
         .service-card ul {
             list-style: none;
             padding: 0;
             text-align: left;
+            position: relative;
+            z-index: 1;
         }
         
         .service-card ul li {
-            margin-bottom: 0.5rem;
-            padding-left: 1.2rem;
+            margin-bottom: 0.8rem;
+            padding-left: 1.8rem;
             position: relative;
+            color: var(--light-text);
         }
         
         .service-card ul li::before {
@@ -212,40 +395,105 @@
             color: var(--primary-color);
             position: absolute;
             left: 0;
+            font-weight: bold;
         }
 
         /* Seção Contato */
         #contato {
+            background: var(--white-color);
+        }
+
+        .contact-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: start;
+        }
+
+        .contact-info {
+            padding: 2rem;
+        }
+
+        .contact-info h3 {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .contact-detail {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .contact-icon {
+            width: 50px;
+            height: 50px;
             background: var(--secondary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            margin-right: 1rem;
+            transition: var(--transition);
+        }
+
+        .contact-detail:hover .contact-icon {
+            background: var(--primary-color);
+            color: var(--white-color);
+        }
+
+        .contact-text {
+            color: var(--light-text);
+        }
+
+        .contact-text a {
+            color: var(--light-text);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .contact-text a:hover {
+            color: var(--primary-color);
         }
 
         .contact-form {
-            max-width: 700px;
-            margin: 0 auto;
-            background: var(--white-color);
+            background: var(--secondary-color);
             padding: 2.5rem;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
         }
 
         .form-group {
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.8rem;
         }
 
         .form-group label {
             display: block;
             margin-bottom: 0.5rem;
-            color: #555;
+            color: var(--text-color);
+            font-weight: 500;
         }
 
         .form-group input,
-        .form-group textarea {
+        .form-group textarea,
+        .form-group select {
             width: 100%;
-            padding: 0.8rem;
-            border-radius: 5px;
+            padding: 1rem;
+            border-radius: 8px;
             border: 1px solid #ddd;
             font-family: 'Poppins', sans-serif;
             font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(126, 107, 143, 0.2);
         }
 
         .form-group textarea {
@@ -254,72 +502,195 @@
         }
         
         .form-message {
-            margin-top: 1rem;
+            margin-top: 1.5rem;
             text-align: center;
-            font-weight: bold;
+            font-weight: 500;
+            padding: 1rem;
+            border-radius: 8px;
+            display: none;
         }
+        
         .form-message.success {
-            color: green;
+            background: rgba(126, 189, 195, 0.2);
+            color: #4a8a90;
+            display: block;
         }
+        
         .form-message.error {
-            color: red;
+            background: rgba(239, 154, 154, 0.2);
+            color: #d32f2f;
+            display: block;
         }
-
 
         /* Footer */
         footer {
             background: var(--primary-color);
             color: var(--white-color);
             text-align: center;
-            padding: 2rem 0;
+            padding: 3rem 0 1.5rem;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .footer-links a {
+            color: var(--white-color);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-color);
+        }
+
+        .copyright {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            width: 100%;
         }
         
         /* Responsividade para Telas Menores */
+        @media (max-width: 992px) {
+            .contact-wrapper {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+        }
+
         @media (max-width: 768px) {
             .navbar {
-                flex-direction: column;
-                gap: 1rem;
+                padding: 0 1rem;
             }
+            
             .nav-links {
-                justify-content: center;
+                position: fixed;
+                top: 70px;
+                left: -100%;
                 width: 100%;
+                height: calc(100vh - 70px);
+                background: var(--white-color);
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                transition: var(--transition);
+                gap: 2.5rem;
             }
+            
+            .nav-links.active {
+                left: 0;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
             #home {
                 padding-top: 8rem;
             }
+            
             .home-content h1 {
                 font-size: 2.5rem;
             }
+            
             .about-content {
                 flex-direction: column;
                 text-align: center;
+                gap: 3rem;
+            }
+            
+            .about-image::after {
+                display: none;
+            }
+            
+            .section-title {
+                font-size: 2.3rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .container {
+                padding: 0 1.5rem;
+            }
+            
+            section {
+                padding: 5rem 0;
+            }
+            
+            .home-content h1 {
+                font-size: 2rem;
+            }
+            
+            .home-content p {
+                font-size: 1rem;
+            }
+            
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .contact-form {
+                padding: 1.5rem;
             }
         }
     </style>
-
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-
 </head>
 <body>
 
-    <header>
+    <header id="header">
         <nav class="container navbar">
-            <a href="#home" class="logo"><span>🦋</span>Fabiana Brazil</a>
+            <a href="#home" class="logo">
+                <span class="logo-icon">🦋</span>
+                <span>Fabiana Brazil</span>
+            </a>
             <ul class="nav-links">
                 <li><a href="#home">Início</a></li>
                 <li><a href="#sobre">Sobre Mim</a></li>
                 <li><a href="#servicos">Áreas de Atuação</a></li>
                 <li><a href="#contato">Contato</a></li>
             </ul>
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
         </nav>
     </header>
 
     <main>
         <section id="home">
-            <div class="container home-content">
+            <div class="container home-content animate-fadeIn">
                 <h1>Acolhimento e Escuta para sua Jornada de Autoconhecimento</h1>
                 <p>Sou Fabiana Brazil, psicanalista clínica e terapeuta. Meu objetivo é oferecer um espaço seguro e confidencial para que você possa explorar suas questões, encontrar caminhos e desenvolver seu bem-estar emocional.</p>
-                <a href="#contato" class="btn">Agende sua Consulta</a>
+                <a href="#contato" class="btn animate-pulse">Agende sua Consulta</a>
+                
+                <div class="social-links">
+                    <a href="https://wa.me/5521990082470" class="social-link" target="_blank" aria-label="WhatsApp">
+                        <i class="fab fa-whatsapp"></i>
+                    </a>
+                    <a href="https://www.instagram.com/fabiana.brazil?igsh=OHFhOTlnZW84OGwy" class="social-link" target="_blank" aria-label="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="mailto:fbrazil32@gmail.com" class="social-link" aria-label="Email">
+                        <i class="far fa-envelope"></i>
+                    </a>
+                </div>
             </div>
         </section>
 
@@ -327,122 +698,243 @@
             <div class="container">
                 <h2 class="section-title">Sobre Mim</h2>
                 <div class="about-content">
-                    <div class="about-image">
-                        <img src="https://i.postimg.cc/7YmDCLkC/Screenshot-20250820-143823-2.png alt="Foto de Fabiana Brazil">
+                    <div class="about-image animate-fadeIn">
+                        <img src="https://i.postimg.cc/76DLBWQY/IMG-20250820-WA0035-1.jpg" alt="Fabiana Brazil - Psicanalista Clínica">
                     </div>
                     <div class="about-text">
                         <h3>Fabiana Brazil - Psicanalista Clínica e Terapeuta</h3>
                         <p>Com formação em Psicanálise, dedico-me a auxiliar pessoas que buscam compreender melhor a si mesmas e superar desafios emocionais. Acredito no poder da escuta ativa e da palavra como ferramentas de transformação.</p>
                         <p>Minha abordagem terapêutica é focada no indivíduo, respeitando sua história e singularidade. Juntos, podemos trilhar um caminho de autodescoberta, alívio de angústias e construção de uma vida mais plena e consciente.</p>
+                        <p>Estou aqui para oferecer suporte emocional em um ambiente acolhedor, onde você se sentirá ouvido, compreendido e respeitado em sua individualidade.</p>
                     </div>
                 </div>
             </div>
         </section>
 
-<section id="servicos">
-    <div class="container">
-        <h2 class="section-title">Áreas de Atuação</h2>
-        <div class="services-grid">
-            <div class="service-card">
-                <h3>Terapia Individual</h3>
-                <ul>
-
-                    <li>Depressão e Transtorno Bipolar</li>
-                    <li>Problemas de Controle da Raiva</li>
-                    <li>Distúrbios do Sono</li>
-                </ul>
+        <section id="servicos">
+            <div class="container">
+                <h2 class="section-title">Áreas de Atuação</h2>
+                <div class="services-grid">
+                    <div class="service-card animate-fadeIn">
+                        <h3>Terapia Individual</h3>
+                        <ul>
+                            <li>Depressão e Transtorno Bipolar</li>
+                            <li>Problemas de Controle da Raiva</li>
+                            <li>Distúrbios do Sono</li>
+                            <li>Dificuldades de Adaptação</li>
+                            <li>Crises existenciais e de identidade</li>
+                        </ul>
+                    </div>
+                    <div class="service-card animate-fadeIn">
+                        <h3>Transtornos e Questões Específicas</h3>
+                        <ul>
+                            <li>Transtorno Obsessivo-Compulsivo (TOC)</li>
+                            <li>Transtornos de Ansiedade</li>
+                            <li>Transtorno de Estresse Pós-Traumático (TEPT)</li>
+                            <li>Transtornos Alimentares</li>
+                            <li>Transtornos de Personalidade</li>
+                        </ul>
+                    </div>
+                    <div class="service-card animate-fadeIn">
+                        <h3>Desenvolvimento e Relacionamentos</h3>
+                        <ul>
+                            <li>Dificuldades nos Relacionamentos</li>
+                            <li>Orientacao para pais e familias</li>
+                            <li>Desenvolvimento de inteligência emocional</li>
+                            <li>Processos de luto e perda</li>
+                            <li>Orientacao profissional e vocacional</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
-            <div class="service-card">
-                <h3>Transtornos e Questões Específicas</h3>
-                <ul>
-                    <li>Transtorno Obsessivo-Compulsivo (TOC)</li>
-                                        <li>Transtornos de Ansiedade</li>
-                    <li>Transtorno de Estresse Pós-Traumático (TEPT)</li>
-                    <li>Transtornos Alimentares</li>
-                    <li>Transtornos de Personalidade</li>
-                </ul>
-            </div>
-            <div class="service-card">
-                <h3>Desenvolvimento e Relacionamentos</h3>
-                <ul>
-                    <li>Dificuldades nos Relacionamentos</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</section>
+        </section>
 
         <section id="contato">
             <div class="container">
                 <h2 class="section-title">Entre em Contato</h2>
-                <form id="contact-form" class="contact-form">
-                    <div class="form-group">
-                        <label for="name">Nome:</label>
-                        <input type="text" id="name" name="from_name" required>
+                <div class="contact-wrapper">
+                    <div class="contact-info">
+                        <h3>Informações de Contato</h3>
+                        
+                        <div class="contact-detail">
+                            <div class="contact-icon">
+                                <i class="fab fa-whatsapp"></i>
+                            </div>
+                            <div class="contact-text">
+                                <a href="https://wa.me/5521990082470" target="_blank">(21) 99008-2470</a>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-detail">
+                            <div class="contact-icon">
+                                <i class="fab fa-instagram"></i>
+                            </div>
+                            <div class="contact-text">
+                                <a href="https://www.instagram.com/fabiana.brazil?igsh=OHFhOTlnZW84OGwy" target="_blank">@fabiana.brazil</a>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-detail">
+                            <div class="contact-icon">
+                                <i class="far fa-envelope"></i>
+                            </div>
+                            <div class="contact-text">
+                                <a href="mailto:fbrazil32@gmail.com">fbrazil32@gmail.com</a>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-detail">
+                            <div class="contact-icon">
+                                <i class="far fa-clock"></i>
+                            </div>
+                            <div class="contact-text">
+                                Segunda a Sexta: 8h às 18h<br>
+                                Sábado: 9h às 13h
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="email">E-mail:</label>
-                        <input type="email" id="email" name="from_email" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="message">Mensagem:</label>
-                        <textarea id="message" name="message" required></textarea>
-                    </div>
-                    <button type="submit" class="btn">Enviar Mensagem</button>
-                    <div id="form-message" class="form-message"></div>
-                </form>
+                    
+                    <form id="contact-form" class="contact-form">
+                        <div class="form-group">
+                            <label for="name">Nome Completo:</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">E-mail:</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Telefone/WhatsApp:</label>
+                            <input type="tel" id="phone" name="phone" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="service">Interesse Principal:</label>
+                            <select id="service" name="service">
+                                <option value="">Selecione uma opção</option>
+                                <option value="Terapia Individual">Terapia Individual</option>
+                                <option value="Transtornos e Questões Específicas">Transtornos e Questões Específicas</option>
+                                <option value="Desenvolvimento e Relacionamentos">Desenvolvimento e Relacionamentos</option>
+                                <option value="Outro">Outro</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Mensagem:</label>
+                            <textarea id="message" name="message" required placeholder="Conte-me um pouco sobre o que você gostaria de trabalhar..."></textarea>
+                        </div>
+                        <button type="submit" class="btn">Enviar Mensagem</button>
+                        <div id="form-message" class="form-message"></div>
+                    </form>
+                </div>
             </div>
         </section>
     </main>
 
     <footer>
         <div class="container">
-            <p>&copy; 2025 Fabiana Brazil - Todos os direitos reservados.</p>
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <span>🦋</span> Fabiana Brazil
+                </div>
+                <div class="footer-links">
+                    <a href="#home">Início</a>
+                    <a href="#sobre">Sobre</a>
+                    <a href="#servicos">Serviços</a>
+                    <a href="#contato">Contato</a>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 Fabiana Brazil - Psicanalista Clínica. Todos os direitos reservados.</p>
+            </div>
         </div>
     </footer>
 
     <script>
-        (function() {
-            // // Substitua os valores abaixo pelos seus, obtidos no site do EmailJS.
-            const serviceID = 'SEU_SERVICE_ID';
-            const templateID = 'SEU_TEMPLATE_ID';
-            const publicKey = 'SUA_PUBLIC_KEY';
-            // emailjs.init({ publicKey: publicKey });
-
+        // Configurações iniciais
+        document.addEventListener('DOMContentLoaded', function() {
+            // Menu mobile
+            const menuBtn = document.querySelector('.mobile-menu-btn');
+            const navLinks = document.querySelector('.nav-links');
+            
+            menuBtn.addEventListener('click', function() {
+                navLinks.classList.toggle('active');
+                menuBtn.innerHTML = navLinks.classList.contains('active') ? 
+                    '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
+            });
+            
+            // Header scroll effect
+            const header = document.getElementById('header');
+            window.addEventListener('scroll', function() {
+                if (window.scrollY > 50) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+            
+            // Scroll animation for sections
+            const sections = document.querySelectorAll('section');
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1
+            };
+            
+            const observer = new IntersectionObserver(function(entries, observer) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, observerOptions);
+            
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+            
+            // Form submission
             const contactForm = document.getElementById('contact-form');
             const formMessage = document.getElementById('form-message');
-
+            
             contactForm.addEventListener('submit', function(event) {
                 event.preventDefault();
                 
-                // Validação simples
-                if (!serviceID || serviceID === 'SEU_SERVICE_ID') {
-                    alert('Por favor, configure suas credenciais do EmailJS no código HTML.');
+                // Get form data
+                const name = document.getElementById('name').value;
+                const email = document.getElementById('email').value;
+                const phone = document.getElementById('phone').value;
+                const service = document.getElementById('service').value;
+                const message = document.getElementById('message').value;
+                
+                // Validate form
+                if (!name || !email || !phone || !message) {
+                    showMessage('Por favor, preencha todos os campos obrigatórios.', 'error');
                     return;
                 }
-
-                // Pega os dados do formulário
-                const templateParams = {
-                    from_name: document.getElementById('name').value,
-                    from_email: document.getElementById('email').value,
-                    message: document.getElementById('message').value,
-                };
                 
-                formMessage.textContent = 'Enviando...';
-                formMessage.classList.remove('success', 'error');
-
-                emailjs.send(serviceID, templateID, templateParams)
-                    .then(function(response) {
-                       formMessage.textContent = 'Mensagem enviada com sucesso! Entrarei em contato em breve.';
-                       formMessage.classList.add('success');
-                       contactForm.reset();
-                    }, function(error) {
-                       formMessage.textContent = 'Ocorreu um erro ao enviar a mensagem. Tente novamente.';
-                       formMessage.classList.add('error');
-                       console.log('FAILED...', error);
-                    });
+                // Create WhatsApp message
+                const whatsappMessage = `Olá, Fabiana! Meu nome é ${name}. Gostaria de informações sobre: ${service || 'terapia'}. ${message}. Meu email: ${email}, telefone: ${phone}.`;
+                const encodedMessage = encodeURIComponent(whatsappMessage);
+                
+                // Redirect to WhatsApp
+                window.open(`https://wa.me/5521990082470?text=${encodedMessage}`, '_blank');
+                
+                // Show success message
+                showMessage('Redirecionando para o WhatsApp...', 'success');
+                
+                // Reset form
+                contactForm.reset();
             });
-        })();
+            
+            function showMessage(text, type) {
+                formMessage.textContent = text;
+                formMessage.className = 'form-message ' + type;
+                
+                // Hide message after 5 seconds
+                setTimeout(() => {
+                    formMessage.style.display = 'none';
+                }, 5000);
+            }
+        });
     </script>
 </body>
-</html>
+            </html>
