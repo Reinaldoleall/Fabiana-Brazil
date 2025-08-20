@@ -67,6 +67,11 @@
             50% { transform: scale(1.05); }
             100% { transform: scale(1); }
         }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
 
         .animate-fadeIn {
             animation: fadeIn 1s ease forwards;
@@ -323,6 +328,86 @@
         .about-text p {
             margin-bottom: 1.2rem;
             color: var(--light-text);
+        }
+
+        /* --- NOVA SEÇÃO DE REFLEXÃO (IA) --- */
+        #reflexao {
+            background: linear-gradient(135deg, var(--white-color) 0%, var(--secondary-color) 100%);
+        }
+
+        .reflection-container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .reflection-card {
+            background: var(--white-color);
+            padding: 3rem 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(126, 107, 143, 0.1);
+            min-height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: var(--transition);
+        }
+        
+        .reflection-card:hover {
+            box-shadow: 0 15px 50px rgba(126, 107, 143, 0.15);
+            transform: translateY(-5px);
+        }
+
+        #reflection-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            font-style: italic;
+            color: var(--text-color);
+            margin-bottom: 2.5rem;
+            min-height: 60px; /* Espaço para o texto não 'pular' */
+            transition: opacity 0.5s ease;
+        }
+        
+        #reflection-text.loading {
+            opacity: 0.5;
+        }
+        
+        .loader {
+            border: 4px solid var(--secondary-color);
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 2.5rem;
+            display: none; /* Inicia escondido */
+        }
+
+        .btn-reflection {
+            background: transparent;
+            color: var(--primary-color);
+            border: 2px solid var(--accent-color);
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-reflection:hover {
+            background: var(--primary-color);
+            color: var(--white-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-reflection:disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
         }
 
         /* Seção Serviços */
@@ -650,6 +735,10 @@
             .contact-form {
                 padding: 1.5rem;
             }
+            
+            #reflection-text {
+                font-size: 1.4rem;
+            }
         }
     </style>
 </head>
@@ -664,6 +753,7 @@
             <ul class="nav-links">
                 <li><a href="#home">Início</a></li>
                 <li><a href="#sobre">Sobre Mim</a></li>
+                <li><a href="#reflexao">Reflexão</a></li> <!-- Link adicionado -->
                 <li><a href="#servicos">Áreas de Atuação</a></li>
                 <li><a href="#contato">Contato</a></li>
             </ul>
@@ -707,6 +797,21 @@
                         <p>Minha abordagem terapêutica é focada no indivíduo, respeitando sua história e singularidade. Juntos, podemos trilhar um caminho de autodescoberta, alívio de angústias e construção de uma vida mais plena e consciente.</p>
                         <p>Estou aqui para oferecer suporte emocional em um ambiente online seguro e acolhedor, onde você poderá se sentir ouvido, compreendido e respeitado em sua individualidade.</p>
                     </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- --- NOVA SEÇÃO DE REFLEXÃO (IA) --- -->
+        <section id="reflexao">
+            <div class="container reflection-container">
+                <h2 class="section-title">Seu Momento de Reflexão</h2>
+                <div class="reflection-card">
+                    <div id="loader" class="loader"></div>
+                    <p id="reflection-text">Clique no botão abaixo para gerar um pensamento para o seu dia.</p>
+                    <button id="generate-reflection-btn" class="btn-reflection">
+                        <i class="fas fa-sync-alt"></i>
+                        <span>Gerar Novo Pensamento</span>
+                    </button>
                 </div>
             </div>
         </section>
@@ -849,20 +954,23 @@
     </footer>
 
     <script>
-        // Configurações iniciais
         document.addEventListener('DOMContentLoaded', function() {
-            // Menu mobile
+            // --- CONFIGURAÇÕES GERAIS ---
             const menuBtn = document.querySelector('.mobile-menu-btn');
             const navLinks = document.querySelector('.nav-links');
-            
+            const header = document.getElementById('header');
+            const sections = document.querySelectorAll('section');
+            const contactForm = document.getElementById('contact-form');
+            const formMessage = document.getElementById('form-message');
+
+            // --- LÓGICA DO MENU MOBILE ---
             menuBtn.addEventListener('click', function() {
                 navLinks.classList.toggle('active');
                 menuBtn.innerHTML = navLinks.classList.contains('active') ? 
                     '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
             });
-            
-            // Header scroll effect
-            const header = document.getElementById('header');
+
+            // --- EFEITO DE SCROLL NO HEADER ---
             window.addEventListener('scroll', function() {
                 if (window.scrollY > 50) {
                     header.classList.add('scrolled');
@@ -870,15 +978,9 @@
                     header.classList.remove('scrolled');
                 }
             });
-            
-            // Scroll animation for sections
-            const sections = document.querySelectorAll('section');
-            const observerOptions = {
-                root: null,
-                rootMargin: '0px',
-                threshold: 0.1
-            };
-            
+
+            // --- ANIMAÇÃO DAS SEÇÕES AO ROLAR ---
+            const observerOptions = { root: null, rootMargin: '0px', threshold: 0.1 };
             const observer = new IntersectionObserver(function(entries, observer) {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -886,55 +988,98 @@
                     }
                 });
             }, observerOptions);
-            
-            sections.forEach(section => {
-                observer.observe(section);
-            });
-            
-            // Form submission
-            const contactForm = document.getElementById('contact-form');
-            const formMessage = document.getElementById('form-message');
-            
+            sections.forEach(section => observer.observe(section));
+
+            // --- ENVIO DO FORMULÁRIO DE CONTATO ---
             contactForm.addEventListener('submit', function(event) {
                 event.preventDefault();
-                
-                // Get form data
                 const name = document.getElementById('name').value;
                 const email = document.getElementById('email').value;
                 const phone = document.getElementById('phone').value;
                 const service = document.getElementById('service').value;
                 const message = document.getElementById('message').value;
-                
-                // Validate form
+
                 if (!name || !email || !phone || !message) {
                     showMessage('Por favor, preencha todos os campos obrigatórios.', 'error');
                     return;
                 }
-                
-                // Create WhatsApp message
+
                 const whatsappMessage = `Olá, Fabiana! Meu nome é ${name}. Gostaria de informações sobre: ${service || 'terapia'}. ${message}. Meu email: ${email}, telefone: ${phone}.`;
                 const encodedMessage = encodeURIComponent(whatsappMessage);
-                
-                // Redirect to WhatsApp
                 window.open(`https://wa.me/5521990082470?text=${encodedMessage}`, '_blank');
-                
-                // Show success message
                 showMessage('Redirecionando para o WhatsApp...', 'success');
-                
-                // Reset form
                 contactForm.reset();
             });
-            
+
             function showMessage(text, type) {
                 formMessage.textContent = text;
                 formMessage.className = 'form-message ' + type;
-                
-                // Hide message after 5 seconds
-                setTimeout(() => {
-                    formMessage.style.display = 'none';
-                }, 5000);
+                setTimeout(() => { formMessage.style.display = 'none'; }, 5000);
             }
+
+            // --- LÓGICA DA API DE IA PARA REFLEXÃO ---
+            const reflectionBtn = document.getElementById('generate-reflection-btn');
+            const reflectionText = document.getElementById('reflection-text');
+            const loader = document.getElementById('loader');
+            
+            const apiKey = "AIzaSyCdPwbDGc7-WDMGsqSC44zCtMjCvOm4h5A"; // A chave da API será injetada pelo ambiente.
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+            async function generateReflection() {
+                reflectionBtn.disabled = true;
+                reflectionText.style.display = 'none';
+                loader.style.display = 'block';
+
+                const prompt = "Gere uma frase curta e inspiradora para reflexão pessoal, no estilo de um psicanalista acolhedor. A frase deve ser sobre autoconhecimento, bem-estar emocional ou a jornada interior. Mantenha um tom sereno e positivo. Não inclua aspas na resposta.";
+                
+                let chatHistory = [{ role: "user", parts: [{ text: prompt }] }];
+                const payload = { contents: chatHistory };
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`API Error: ${response.statusText}`);
+                    }
+
+                    const result = await response.json();
+                    
+                    if (result.candidates && result.candidates.length > 0) {
+                        const text = result.candidates[0].content.parts[0].text;
+                        reflectionText.textContent = `"${text.trim()}"`;
+                    } else {
+                        throw new Error("Resposta da API inválida.");
+                    }
+
+                } catch (error) {
+                    console.error("Erro ao gerar reflexão:", error);
+                    reflectionText.textContent = "Não foi possível gerar um pensamento agora. Tente novamente em alguns instantes.";
+                } finally {
+                    loader.style.display = 'none';
+                    reflectionText.style.display = 'block';
+                    reflectionBtn.disabled = false;
+                }
+            }
+
+            reflectionBtn.addEventListener('click', generateReflection);
+            
+            // Gera uma reflexão inicial quando a seção se torna visível
+            const reflectionSection = document.getElementById('reflexao');
+            const reflectionObserver = new IntersectionObserver((entries) => {
+                if (entries[0].isIntersecting) {
+                    generateReflection();
+                    reflectionObserver.unobserve(reflectionSection); // Roda apenas uma vez
+                }
+            }, { threshold: 0.5 });
+
+            reflectionObserver.observe(reflectionSection);
         });
     </script>
 </body>
-            </html>
+</html>
+
